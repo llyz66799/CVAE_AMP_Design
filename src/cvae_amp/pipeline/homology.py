@@ -2,14 +2,30 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 from pathlib import Path
 
-from cvae_amp.config.paths import BLAST_BIN
+
+def _resolve_blast_bin(blast_bin: str | None = None) -> Path:
+    """Resolve BLAST+ bin directory.
+
+    Priority: explicit argument > BLAST_BIN env var > empty (tools on PATH).
+    """
+    if blast_bin:
+        return Path(blast_bin)
+    env = os.environ.get("BLAST_BIN", "")
+    if env:
+        return Path(env)
+    return Path()
 
 
-def build_blast_db(fasta_path: Path, db_name: str) -> None:
-    makeblastdb = BLAST_BIN / "makeblastdb"
+def build_blast_db(
+    fasta_path: Path,
+    db_name: str,
+    blast_bin: str | None = None,
+) -> None:
+    makeblastdb = _resolve_blast_bin(blast_bin) / "makeblastdb"
     subprocess.run([
         str(makeblastdb), "-in", str(fasta_path),
         "-dbtype", "prot", "-out", db_name,
@@ -22,8 +38,9 @@ def run_blastp(
     output_path: Path,
     evalue: float = 1e-5,
     threads: int = 4,
+    blast_bin: str | None = None,
 ) -> Path:
-    blastp = BLAST_BIN / "blastp"
+    blastp = _resolve_blast_bin(blast_bin) / "blastp"
     subprocess.run([
         str(blastp),
         "-query", str(query_fasta),

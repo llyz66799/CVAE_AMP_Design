@@ -1,3 +1,38 @@
+Metadata-Version: 2.4
+Name: cvae-amp-design
+Version: 1.0.0
+Summary: CVAE-based antimicrobial peptide generation and multi-model activity prediction
+Author: CVAE-AMP Team
+License: MIT
+Keywords: antimicrobial-peptides,cvae,deep-learning,bioinformatics,peptide-design
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch>=2.0
+Requires-Dist: numpy>=1.24
+Requires-Dist: pandas>=1.5
+Requires-Dist: matplotlib>=3.7
+Requires-Dist: seaborn>=0.12
+Requires-Dist: scikit-learn>=1.2
+Requires-Dist: xgboost>=1.7
+Requires-Dist: openpyxl>=3.1
+Requires-Dist: modlamp>=4.3
+Requires-Dist: joblib>=1.2
+Requires-Dist: optuna>=3.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Dynamic: license-file
+
 # CVAE-AMP-Design
 
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -42,21 +77,12 @@ pip install -r requirements.txt
 
 ### External dependencies
 
-The full pipeline requires [CD-HIT](https://github.com/weizhongli/cdhit) and [BLAST+](https://blast.ncbi.nlm.nih.gov/) for sequence deduplication and homology filtering. There are three ways to specify their paths (in priority order):
+The full pipeline requires [CD-HIT](https://github.com/weizhongli/cdhit) and [BLAST+](https://blast.ncbi.nlm.nih.gov/) for sequence deduplication and homology filtering. Set their paths via environment variables:
 
-**1. CLI arguments (highest priority):**
-```bash
-python scripts/run_pipeline.py --cd-hit /path/to/cd-hit --blast-dir /path/to/ncbi-blast-plus/bin --num 100
-```
-
-**2. Environment variables:**
 ```bash
 export CDHIT_BIN=/path/to/cd-hit
 export BLAST_BIN=/path/to/ncbi-blast-plus/bin
 ```
-
-**3. System PATH (lowest priority):**
-If neither CLI args nor env vars are set, the pipeline looks for `cd-hit`, `makeblastdb`, and `blastp` on `$PATH`.
 
 ## Quick Start
 
@@ -86,10 +112,6 @@ python scripts/filter_results.py results/prediction/test_pred.xlsx -t 0.9
 ```bash
 # End-to-end: generate → CD-HIT → BLAST → predict → filter
 python scripts/run_pipeline.py --model cvae_pred --target 1.0,1.0,1.0 --num 30000
-
-# With explicit external tool paths
-python scripts/run_pipeline.py --model cvae_pred --target 1.0,1.0,1.0 --num 30000 \
-    --cd-hit /path/to/cd-hit --blast-dir /path/to/ncbi-blast-plus/bin
 ```
 
 ## Models

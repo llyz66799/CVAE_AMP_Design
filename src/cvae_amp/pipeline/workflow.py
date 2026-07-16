@@ -51,6 +51,8 @@ class AMPWorkflow:
         work_dir: Path | None = None,
         train_xlsx: Path | None = None,
         vae_seq_file: Path | None = None,
+        cdhit_bin: str | None = None,
+        blast_bin: str | None = None,
     ) -> None:
         self.model_name = model_name
         self.target = list(target)
@@ -65,6 +67,8 @@ class AMPWorkflow:
 
         self.train_xlsx = train_xlsx or DATA_RAW / "VAE_train_real.xlsx"
         self.vae_seq_file = vae_seq_file or ROOT / "vae_seq.txt"
+        self.cdhit_bin = cdhit_bin
+        self.blast_bin = blast_bin
 
         self._model = None
 
@@ -148,16 +152,16 @@ class AMPWorkflow:
         print("Step 3: CD-HIT deduplication")
         print("=" * 60)
         output = self.work_dir / "candidates_cdhit70"
-        return run_cdhit(generated_fasta, output, identity=PIPELINE_CDHIT_IDENTITY)
+        return run_cdhit(generated_fasta, output, identity=PIPELINE_CDHIT_IDENTITY, cdhit_bin=self.cdhit_bin)
 
     def step_blast(self, cdhit_fasta: Path, train_fasta: Path) -> Path:
         print("=" * 60)
         print("Step 4: BLASTP against training set")
         print("=" * 60)
         db_name = str(self.work_dir / "train_db")
-        build_blast_db(train_fasta, db_name)
+        build_blast_db(train_fasta, db_name, blast_bin=self.blast_bin)
         output = self.work_dir / "blast_results.txt"
-        return run_blastp(cdhit_fasta, db_name, output, evalue=PIPELINE_BLAST_EVALUE)
+        return run_blastp(cdhit_fasta, db_name, output, evalue=PIPELINE_BLAST_EVALUE, blast_bin=self.blast_bin)
 
     def step_filter(self, cdhit_fasta: Path, blast_out: Path) -> Path:
         print("=" * 60)

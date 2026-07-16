@@ -32,8 +32,8 @@ SCRIPTS = ROOT / "scripts"
 # External tools (set via environment or use defaults)
 import os
 
-CDHIT_BIN = Path(os.environ.get("CDHIT_BIN", "/data/youzhuozhu/software/cd-hit-v4.8.1-2019-0228/cd-hit"))
-BLAST_BIN = Path(os.environ.get("BLAST_BIN", "/data/youzhuozhu/software/ncbi-blast-2.17.0+/bin"))
+CDHIT_BIN = Path(os.environ.get("CDHIT_BIN", "cd-hit"))
+BLAST_BIN = Path(os.environ.get("BLAST_BIN", ""))
 
 
 def ensure_dirs() -> None:

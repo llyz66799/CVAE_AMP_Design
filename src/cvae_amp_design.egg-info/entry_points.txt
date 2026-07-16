@@ -1,0 +1,6 @@
+[console_scripts]
+cvae-generate = cvae_amp.scripts.generate:main
+cvae-pipeline = cvae_amp.scripts.run_pipeline:main
+cvae-predict = cvae_amp.scripts.predict:main
+cvae-train-gen = cvae_amp.scripts.train_generation:main
+cvae-train-pred = cvae_amp.scripts.train_prediction:main

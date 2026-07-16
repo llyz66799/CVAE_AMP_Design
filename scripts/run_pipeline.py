@@ -17,6 +17,10 @@ def main() -> None:
     parser.add_argument("--num", type=int, default=1000)
     parser.add_argument("--temperature", type=float, default=0.7)
     parser.add_argument("--work-dir", type=str, default=None)
+    parser.add_argument("--cd-hit", type=str, default=None,
+                        help="Path to cd-hit binary (overrides CDHIT_BIN env var)")
+    parser.add_argument("--blast-dir", type=str, default=None,
+                        help="Path to BLAST+ bin directory (overrides BLAST_BIN env var)")
     args = parser.parse_args()
 
     target = tuple(float(x) for x in args.target.split(","))
@@ -30,6 +34,8 @@ def main() -> None:
         num_gen=args.num,
         temperature=args.temperature,
         work_dir=work_dir,
+        cdhit_bin=args.cd_hit,
+        blast_bin=args.blast_dir,
     )
     wf.run()
 
