@@ -54,8 +54,6 @@ export BLAST_BIN=/path/to/ncbi-blast-plus/bin
 ### Generate Peptides (Stage 1)
 
 ```bash
-# Train generation models
-python scripts/train_generation.py --model all
 
 # Generate 200 safe broad-spectrum AMP candidates
 python scripts/generate.py --model cvae_pred --target 1.0,1.0,1.0 --num 200
