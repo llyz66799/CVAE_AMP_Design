@@ -10,14 +10,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from cvae_amp.generation.training import train_all_models, train_one_model
 from cvae_amp.generation.models import VAE, CVAE, CVAE_Pred
 from cvae_amp.generation.losses import vae_loss_fn, cvae_loss_fn, cvae_pred_loss_fn
-from cvae_amp.config.paths import DATA_RAW
+from cvae_amp.config.paths import DATA_DATASET
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Train CVAE generative models")
     parser.add_argument("--model", default="all",
                         choices=["vae", "cvae", "cvae_pred", "all"])
-    parser.add_argument("--data", type=str, default=str(DATA_RAW / "VAE_train_real.xlsx"))
+    parser.add_argument("--data", type=str, default=str(DATA_DATASET / "VAE_train_real.xlsx"))
     parser.add_argument("--epochs", type=int, default=500)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--output-dir", type=str, default=None)

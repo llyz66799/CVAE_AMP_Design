@@ -17,7 +17,7 @@ import openpyxl
 import torch
 
 from cvae_amp.config.paths import (
-    ROOT, DATA_RAW, MODELS_GEN, MODELS_PRED, RESULTS_PIPELINE, ensure_dirs,
+    ROOT, DATA_DATASET, MODELS_GEN, MODELS_PRED, RESULTS_PIPELINE, ensure_dirs,
 )
 from cvae_amp.config.defaults import (
     DEFAULT_TEMPERATURE, DEFAULT_TOP_K, DEFAULT_MIN_LEN, DEFAULT_MAX_LEN,
@@ -65,7 +65,7 @@ class AMPWorkflow:
         self.work_dir = work_dir or RESULTS_PIPELINE
         self.work_dir.mkdir(parents=True, exist_ok=True)
 
-        self.train_xlsx = train_xlsx or DATA_RAW / "VAE_train_real.xlsx"
+        self.train_xlsx = train_xlsx or DATA_DATASET / "VAE_train_real.xlsx"
         self.vae_seq_file = vae_seq_file or ROOT / "vae_seq.txt"
         self.cdhit_bin = cdhit_bin
         self.blast_bin = blast_bin
@@ -219,8 +219,8 @@ class AMPWorkflow:
 
         feature_dir = ROOT / "data" / "features"
         print("  Encoding features...")
-        enc_amp = FeatureEncoder(str(feature_dir / "20aa_pc7_feature.xlsx"))
-        enc_hp = FeatureEncoder(str(feature_dir / "20aa_pc5_1_feature.xlsx"))
+        enc_amp = FeatureEncoder(str(feature_dir / "20aa_AF7_feature.xlsx"))
+        enc_hp = FeatureEncoder(str(feature_dir / "20aa_AF5_1_feature.xlsx"))
 
         feat_amp = enc_amp.encode_file(str(candidates_xlsx))
         feat_hp = enc_hp.encode_file(str(candidates_xlsx))

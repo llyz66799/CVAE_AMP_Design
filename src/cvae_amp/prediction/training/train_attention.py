@@ -20,7 +20,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 import optuna
 import openpyxl as xl
 
-from cvae_amp.config.paths import DATA_RAW, DATA_FEATURES, MODELS_PRED, RESULTS
+from cvae_amp.config.paths import DATA_DATASET, DATA_FEATURES, MODELS_PRED, RESULTS
 from cvae_amp.prediction.models import AMPAttentionModel
 from cvae_amp.prediction.features import FeatureEncoder
 
@@ -72,12 +72,12 @@ def load_data(
 
     encoder = FeatureEncoder(str(DATA_FEATURES / f"20aa_{feature_name}_feature.xlsx"))
 
-    x_train = encoder.encode_file(str(DATA_RAW / train_f))
-    y_train = _read_labels(DATA_RAW / train_f)
-    x_val = encoder.encode_file(str(DATA_RAW / val_f))
-    y_val = _read_labels(DATA_RAW / val_f)
-    x_test = encoder.encode_file(str(DATA_RAW / test_f))
-    y_test = _read_labels(DATA_RAW / test_f)
+    x_train = encoder.encode_file(str(DATA_DATASET / train_f))
+    y_train = _read_labels(DATA_DATASET / train_f)
+    x_val = encoder.encode_file(str(DATA_DATASET / val_f))
+    y_val = _read_labels(DATA_DATASET / val_f)
+    x_test = encoder.encode_file(str(DATA_DATASET / test_f))
+    y_test = _read_labels(DATA_DATASET / test_f)
 
     return x_train, y_train, x_val, y_val, x_test, y_test, encoder.dim
 
@@ -154,7 +154,7 @@ class Objective:
 
 def train_attention(
     task: str = "amp",
-    feature: str = "pc7",
+    feature: str = "AF7",
     n_trials: int = 30,
 ) -> str:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -215,7 +215,7 @@ def train_attention(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train BiLSTM+Attention with Optuna")
     parser.add_argument("--task", default="amp", choices=["amp", "aep", "hp"])
-    parser.add_argument("--feature", default="pc7")
+    parser.add_argument("--feature", default="AF7")
     parser.add_argument("--trials", type=int, default=30)
     args = parser.parse_args()
     train_attention(args.task, args.feature, args.trials)

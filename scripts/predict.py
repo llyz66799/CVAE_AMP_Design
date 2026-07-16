@@ -49,7 +49,7 @@ def main() -> None:
     if "amp" in args.models:
         print("  Loading AMP model...")
         model_amp = load_amp(device)
-        enc_amp = FeatureEncoder(str(DATA_FEATURES / "20aa_pc7_feature.xlsx"))
+        enc_amp = FeatureEncoder(str(DATA_FEATURES / "20aa_AF7_feature.xlsx"))
         feat = enc_amp.encode_file(tmp_path)
         t = torch.tensor(feat, dtype=torch.float32).to(device)
         with torch.no_grad():
@@ -59,7 +59,7 @@ def main() -> None:
     if "aep" in args.models:
         print("  Loading AEP model...")
         model_aep = load_aep()
-        enc_aep = FeatureEncoder(str(DATA_FEATURES / "20aa_pc7_feature.xlsx"))
+        enc_aep = FeatureEncoder(str(DATA_FEATURES / "20aa_AF7_feature.xlsx"))
         feat = enc_aep.encode_file(tmp_path)
         n_s = len(feat)
         results["aep_Pred"] = model_aep.predict_proba(feat.reshape(n_s, -1))[:, 1]
@@ -68,7 +68,7 @@ def main() -> None:
     if "hp" in args.models:
         print("  Loading HP model...")
         model_hp = load_hp()
-        enc_hp = FeatureEncoder(str(DATA_FEATURES / "20aa_pc5_1_feature.xlsx"))
+        enc_hp = FeatureEncoder(str(DATA_FEATURES / "20aa_AF5_1_feature.xlsx"))
         feat = enc_hp.encode_file(tmp_path)
         n_s = len(feat)
         results["hp_Pred"] = model_hp.predict_proba(feat.reshape(n_s, -1))[:, 1]

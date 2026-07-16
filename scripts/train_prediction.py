@@ -13,7 +13,7 @@ def main() -> None:
     parser.add_argument("--method", default="attention",
                         choices=["attention", "xgboost", "rf", "gbdt", "svc", "all_ensemble"])
     parser.add_argument("--task", default="amp", choices=["amp", "aep", "hp", "all"])
-    parser.add_argument("--feature", default="pc7")
+    parser.add_argument("--feature", default="AF7")
     parser.add_argument("--trials", type=int, default=30,
                         help="Optuna trials (attention only)")
     args = parser.parse_args()

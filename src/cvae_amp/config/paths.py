@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 
 # Data
-DATA_RAW = ROOT / "data" / "raw"
+DATA_DATASET = ROOT / "data" / "dataset"
 DATA_FEATURES = ROOT / "data" / "features"
 
 # Model checkpoints

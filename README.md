@@ -75,7 +75,7 @@ python scripts/compare_models.py --num 1000
 
 ```bash
 # Batch activity prediction
-python scripts/predict.py data/raw/amp_test2149.xlsx -o results/prediction/test_pred.xlsx
+python scripts/predict.py data/dataset/amp_test2149.xlsx -o results/prediction/test_pred.xlsx
 
 # Filter by threshold
 python scripts/filter_results.py results/prediction/test_pred.xlsx -t 0.9
@@ -106,9 +106,9 @@ python scripts/run_pipeline.py --model cvae_pred --target 1.0,1.0,1.0 --num 3000
 
 | Model    | Type                         | Feature Set           |
 | -------- | ---------------------------- | --------------------- |
-| AMP      | BiLSTM + Attention (PyTorch) | pc7 (7 descriptors)   |
-| AEP      | XGBoost                      | pc7 (7 descriptors)   |
-| HP       | XGBoost                      | pc5_1 (5 descriptors) |
+| AMP      | BiLSTM + Attention (PyTorch) | AF7 (7 descriptors)   |
+| AEP      | XGBoost                      | AF7 (7 descriptors)   |
+| HP       | XGBoost                      | AF5_1 (5 descriptors) |
 | Ensemble | XGBoost, RF, GBDT, SVC       | 9 feature sets        |
 
 ## Target Label Semantics

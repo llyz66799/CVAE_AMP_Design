@@ -104,8 +104,8 @@ def main() -> None:
     model_amp = load_amp(device)
     model_aep = load_aep()
     model_hp = load_hp()
-    enc_amp = FeatureEncoder(str(DATA_FEATURES / "20aa_pc7_feature.xlsx"))
-    enc_hp = FeatureEncoder(str(DATA_FEATURES / "20aa_pc5_1_feature.xlsx"))
+    enc_amp = FeatureEncoder(str(DATA_FEATURES / "20aa_AF7_feature.xlsx"))
+    enc_hp = FeatureEncoder(str(DATA_FEATURES / "20aa_AF5_1_feature.xlsx"))
     print("  Done.\n")
 
     all_results = []

@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from cvae_amp.prediction.features import FeatureEncoder
 from cvae_amp.prediction.loaders import load_amp, load_aep, load_hp
-from cvae_amp.config.paths import DATA_RAW, DATA_FEATURES, RESULTS
+from cvae_amp.config.paths import DATA_DATASET, DATA_FEATURES, RESULTS
 
 
 def _read_labels(path: Path) -> np.ndarray:
@@ -55,11 +55,11 @@ def main() -> None:
     # Define task config
     tasks = [
         {"name": "AMP", "test_file": "amp_test2149.xlsx",
-         "feature_file": "20aa_pc7_feature.xlsx", "model_type": "amp"},
+         "feature_file": "20aa_AF7_feature.xlsx", "model_type": "amp"},
         {"name": "AEP", "test_file": "aep_test404.xlsx",
-         "feature_file": "20aa_pc7_feature.xlsx", "model_type": "aep"},
+         "feature_file": "20aa_AF7_feature.xlsx", "model_type": "aep"},
         {"name": "HP",  "test_file": "hp_test416.xlsx",
-         "feature_file": "20aa_pc5_1_feature.xlsx", "model_type": "hp"},
+         "feature_file": "20aa_AF5_1_feature.xlsx", "model_type": "hp"},
     ]
 
     # Load models
@@ -78,7 +78,7 @@ def main() -> None:
         print(f"Evaluating {name}")
         print(f"{'='*50}")
 
-        test_path = DATA_RAW / task["test_file"]
+        test_path = DATA_DATASET / task["test_file"]
         feature_path = DATA_FEATURES / task["feature_file"]
 
         # Load and encode data
@@ -123,7 +123,7 @@ def main() -> None:
         # Detailed predictions per model
         for task in tasks:
             name = task["name"]
-            test_path = DATA_RAW / task["test_file"]
+            test_path = DATA_DATASET / task["test_file"]
             feature_path = DATA_FEATURES / task["feature_file"]
 
             y_test = _read_labels(test_path)

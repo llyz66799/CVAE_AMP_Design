@@ -20,7 +20,7 @@ from sklearn.svm import SVC
 from xgboost import XGBClassifier
 import joblib
 
-from cvae_amp.config.paths import DATA_RAW, DATA_FEATURES, MODELS_PRED, RESULTS
+from cvae_amp.config.paths import DATA_DATASET, DATA_FEATURES, MODELS_PRED, RESULTS
 from cvae_amp.prediction.features import FeatureEncoder
 
 
@@ -31,7 +31,7 @@ TASK_FILES = {
 }
 
 FEATURE_NAMES = [
-    "pc5_1", "pc5_2", "pc5_3", "pc6_1", "pc6_2", "pc6_3", "pc6", "pc7",
+    "AF5_1", "AF5_2", "AF5_3", "AF6_1", "AF6_2", "AF6_3", "AF6", "AF7",
 ]
 
 PARAM_GRIDS = {
@@ -70,12 +70,12 @@ def load_and_encode(task: str, feature: str):
     train_f, val_f, test_f = TASK_FILES[task]
     encoder = FeatureEncoder(str(DATA_FEATURES / f"20aa_{feature}_feature.xlsx"))
 
-    x_train = encoder.encode_file(str(DATA_RAW / train_f))
-    y_train = _read_labels(DATA_RAW / train_f)
-    x_val = encoder.encode_file(str(DATA_RAW / val_f))
-    y_val = _read_labels(DATA_RAW / val_f)
-    x_test = encoder.encode_file(str(DATA_RAW / test_f))
-    y_test = _read_labels(DATA_RAW / test_f)
+    x_train = encoder.encode_file(str(DATA_DATASET / train_f))
+    y_train = _read_labels(DATA_DATASET / train_f)
+    x_val = encoder.encode_file(str(DATA_DATASET / val_f))
+    y_val = _read_labels(DATA_DATASET / val_f)
+    x_test = encoder.encode_file(str(DATA_DATASET / test_f))
+    y_test = _read_labels(DATA_DATASET / test_f)
 
     n_train, n_val, n_test = len(y_train), len(y_val), len(y_test)
     return (
@@ -216,7 +216,7 @@ TRAIN_FNS = {
 def train_ensemble(
     method: str = "xgboost",
     task: str = "aep",
-    feature: str = "pc7",
+    feature: str = "AF7",
 ) -> str:
     os.makedirs(str(MODELS_PRED), exist_ok=True)
     os.makedirs(str(RESULTS), exist_ok=True)
@@ -238,6 +238,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train ensemble models with GridSearchCV")
     parser.add_argument("--method", default="xgboost", choices=["xgboost", "rf", "gbdt", "svc"])
     parser.add_argument("--task", default="aep", choices=["amp", "aep", "hp"])
-    parser.add_argument("--feature", default="pc7")
+    parser.add_argument("--feature", default="AF7")
     args = parser.parse_args()
     train_ensemble(args.method, args.task, args.feature)

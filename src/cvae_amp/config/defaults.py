@@ -33,7 +33,7 @@ DEFAULT_MIN_LEN = 8
 DEFAULT_MAX_LEN = 40
 
 # ── Prediction model architecture ──
-AMP_INPUT_DIM = 7   # pc7 descriptors
+AMP_INPUT_DIM = 7   # AF7 descriptors
 AMP_LSTM_HIDDEN = 64
 AMP_NUM_LAYERS = 2
 AMP_DROPOUT = 0.4

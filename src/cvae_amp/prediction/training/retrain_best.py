@@ -21,18 +21,18 @@ from sklearn.svm import SVC
 from xgboost import XGBClassifier
 import joblib
 
-from cvae_amp.config.paths import DATA_RAW, DATA_FEATURES, MODELS_PRED, RESULTS
+from cvae_amp.config.paths import DATA_DATASET, DATA_FEATURES, MODELS_PRED, RESULTS
 from cvae_amp.prediction.features import FeatureEncoder
 
 FEATURE_PATHS: dict[str, str] = {
-    "pc5_1": "20aa_pc5_1_feature.xlsx",
-    "pc5_2": "20aa_pc5_2_feature.xlsx",
-    "pc5_3": "20aa_pc5_3_feature.xlsx",
-    "pc6_1": "20aa_pc6_1_feature.xlsx",
-    "pc6_2": "20aa_pc6_2_feature.xlsx",
-    "pc6_3": "20aa_pc6_3_feature.xlsx",
-    "pc6": "20aa_pc6_feature.xlsx",
-    "pc7": "20aa_pc7_feature.xlsx",
+    "AF5_1": "20aa_AF5_1_feature.xlsx",
+    "AF5_2": "20aa_AF5_2_feature.xlsx",
+    "AF5_3": "20aa_AF5_3_feature.xlsx",
+    "AF6_1": "20aa_AF6_1_feature.xlsx",
+    "AF6_2": "20aa_AF6_2_feature.xlsx",
+    "AF6_3": "20aa_AF6_3_feature.xlsx",
+    "AF6": "20aa_AF6_feature.xlsx",
+    "AF7": "20aa_AF7_feature.xlsx",
     "blosum62": "BLOSUM62_test_AtoY.xlsx",
 }
 
@@ -44,24 +44,24 @@ DATASETS: dict[str, dict[str, str]] = {
 
 BEST_CONFIGS: dict = {
     "XGBoost": {
-        "aep": {"feature": "pc7", "n_estimators": 200, "learning_rate": 0.1, "subsample": 0.5},
+        "aep": {"feature": "AF7", "n_estimators": 200, "learning_rate": 0.1, "subsample": 0.5},
         "amp": {"feature": "blosum62", "n_estimators": 200, "learning_rate": 0.1, "subsample": 0.5},
-        "hp": {"feature": "pc5_1", "n_estimators": 100, "learning_rate": 0.1, "subsample": 0.6},
+        "hp": {"feature": "AF5_1", "n_estimators": 100, "learning_rate": 0.1, "subsample": 0.6},
     },
     "RF": {
-        "aep": {"feature": "pc7", "n_estimators": 200, "criterion": "gini", "max_depth": 50},
-        "amp": {"feature": "pc5_3", "n_estimators": 100, "criterion": "gini", "max_depth": 50},
-        "hp": {"feature": "pc5_2", "n_estimators": 200, "criterion": "entropy", "max_depth": 50},
+        "aep": {"feature": "AF7", "n_estimators": 200, "criterion": "gini", "max_depth": 50},
+        "amp": {"feature": "AF5_3", "n_estimators": 100, "criterion": "gini", "max_depth": 50},
+        "hp": {"feature": "AF5_2", "n_estimators": 200, "criterion": "entropy", "max_depth": 50},
     },
     "GBDT": {
-        "aep": {"feature": "pc5_1", "n_estimators": 100, "learning_rate": 0.1, "subsample": 0.5},
-        "amp": {"feature": "pc5_2", "n_estimators": 150, "learning_rate": 0.55, "subsample": 0.8},
-        "hp": {"feature": "pc6_2", "n_estimators": 150, "learning_rate": 0.1, "subsample": 0.6},
+        "aep": {"feature": "AF5_1", "n_estimators": 100, "learning_rate": 0.1, "subsample": 0.5},
+        "amp": {"feature": "AF5_2", "n_estimators": 150, "learning_rate": 0.55, "subsample": 0.8},
+        "hp": {"feature": "AF6_2", "n_estimators": 150, "learning_rate": 0.1, "subsample": 0.6},
     },
     "SVC": {
-        "aep": {"feature": "pc6_2", "C": 1.5, "kernel": "rbf", "max_iter": -1},
+        "aep": {"feature": "AF6_2", "C": 1.5, "kernel": "rbf", "max_iter": -1},
         "amp": {"feature": "blosum62", "C": 1.5, "kernel": "rbf", "max_iter": -1},
-        "hp": {"feature": "pc5_1", "C": 1.5, "kernel": "rbf", "max_iter": -1},
+        "hp": {"feature": "AF5_1", "C": 1.5, "kernel": "rbf", "max_iter": -1},
     },
 }
 
@@ -77,8 +77,8 @@ def _read_labels(path) -> np.ndarray:
 
 
 def load_data(dataset_name: str, feature_name: str):
-    train_path = DATA_RAW / DATASETS[dataset_name]["train"]
-    test_path = DATA_RAW / DATASETS[dataset_name]["test"]
+    train_path = DATA_DATASET / DATASETS[dataset_name]["train"]
+    test_path = DATA_DATASET / DATASETS[dataset_name]["test"]
     feature_file = FEATURE_PATHS[feature_name]
     feature_path = DATA_FEATURES / feature_file
 

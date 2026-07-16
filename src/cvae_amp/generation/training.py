@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from cvae_amp.config.defaults import (
     SEED, GEN_EPOCHS, GEN_BATCH_SIZE, GEN_LR, KL_CYCLE, PROP_WEIGHT,
 )
-from cvae_amp.config.paths import DATA_RAW, MODELS_GEN, RESULTS, ensure_dirs
+from cvae_amp.config.paths import DATA_DATASET, MODELS_GEN, RESULTS, ensure_dirs
 from cvae_amp.generation.models import VAE, CVAE, CVAE_Pred, DEVICE
 from cvae_amp.generation.losses import vae_loss_fn, cvae_loss_fn, cvae_pred_loss_fn
 from cvae_amp.generation.regularizers import get_kl_weight
@@ -132,7 +132,7 @@ def train_all_models(
     output_dir: str | None = None,
 ) -> dict[str, str]:
     if data_path is None:
-        data_path = str(DATA_RAW / "VAE_train_real.xlsx")
+        data_path = str(DATA_DATASET / "VAE_train_real.xlsx")
     if output_dir is None:
         output_dir = str(MODELS_GEN)
 
