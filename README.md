@@ -67,8 +67,6 @@ If neither CLI args nor env vars are set, the pipeline looks for `cd-hit`, `make
 # Generate 200 safe broad-spectrum AMP candidates
 python scripts/generate.py --model cvae_pred --target 1.0,1.0,1.0 --num 200
 
-# Compare all three generative models
-python scripts/compare_models.py --num 1000
 ```
 
 ### Predict & Filter (Stage 2)
