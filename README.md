@@ -24,9 +24,7 @@ CVAE_AMP_Design/
 │   └── pipeline/                    # End-to-end orchestration
 ├── scripts/                         # CLI entry points
 ├── data/                            # Training datasets & feature tables
-├── models/                          # Trained model checkpoints
-├── results/                         # Output directory
-└── analysis/                        # Publication plotting scripts
+└──  models/                          # Trained model checkpoints
 ```
 
 ## Installation
