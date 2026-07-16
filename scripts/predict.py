@@ -18,7 +18,7 @@ from cvae_amp.config.paths import DATA_FEATURES
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Predict peptide activities")
-    parser.add_argument("input", type=str, help="Input .xlsx file (column 1 = sequences)")
+    parser.add_argument("input", type=str, help="Input .xlsx file (auto-detects 'seq' column, otherwise column 1)")
     parser.add_argument("-o", "--output", type=str, default=None)
     parser.add_argument("-m", "--models", nargs="+", default=["amp", "aep", "hp"],
                         choices=["amp", "aep", "hp"])
@@ -33,7 +33,11 @@ def main() -> None:
         device = torch.device(device_str)
 
     df_in = pd.read_excel(args.input)
-    sequences = df_in.iloc[:, 0].tolist()
+    # Auto-detect sequence column: use 'seq' if present, otherwise first column
+    if "seq" in df_in.columns:
+        sequences = df_in["seq"].tolist()
+    else:
+        sequences = df_in.iloc[:, 0].tolist()
     n = len(sequences)
     print(f"Loaded {n} sequences from {args.input}")
 
@@ -76,6 +80,7 @@ def main() -> None:
 
     os.unlink(tmp_path)
 
+    Path(output).parent.mkdir(parents=True, exist_ok=True)
     df_out = pd.DataFrame(results)
     df_out.to_excel(output, index=False)
     print(f"Saved to {output}")

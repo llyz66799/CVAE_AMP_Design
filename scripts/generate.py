@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from cvae_amp.generation.models import VAE, CVAE, CVAE_Pred, DEVICE
 from cvae_amp.generation.sampling import sample_vae, sample_cvae
-from cvae_amp.config.paths import MODELS_GEN, RESULTS_GEN
+from cvae_amp.config.paths import MODELS_GEN, RESULTS_GEN, ensure_dirs
 from cvae_amp.pipeline.filters import valid_sequence
 
 
@@ -41,6 +41,7 @@ def main() -> None:
         sys.exit("Target must be 3 comma-separated values")
 
     model_cls, ckpt = MODEL_REGISTRY[args.model]
+    ensure_dirs()
     ckpt_path = MODELS_GEN / ckpt
     model = model_cls().to(DEVICE)
     model.load_state_dict(torch.load(str(ckpt_path), map_location=DEVICE))
