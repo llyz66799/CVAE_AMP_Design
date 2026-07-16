@@ -21,7 +21,7 @@ Requires-Dist: pandas>=1.5
 Requires-Dist: matplotlib>=3.7
 Requires-Dist: seaborn>=0.12
 Requires-Dist: scikit-learn>=1.2
-Requires-Dist: xgboost>=1.7
+Requires-Dist: xgboost>=3.2
 Requires-Dist: openpyxl>=3.1
 Requires-Dist: modlamp>=4.3
 Requires-Dist: joblib>=1.2
@@ -77,12 +77,21 @@ pip install -r requirements.txt
 
 ### External dependencies
 
-The full pipeline requires [CD-HIT](https://github.com/weizhongli/cdhit) and [BLAST+](https://blast.ncbi.nlm.nih.gov/) for sequence deduplication and homology filtering. Set their paths via environment variables:
+The full pipeline requires [CD-HIT](https://github.com/weizhongli/cdhit) and [BLAST+](https://blast.ncbi.nlm.nih.gov/) for sequence deduplication and homology filtering. There are three ways to specify their paths (in priority order):
 
+**1. CLI arguments (highest priority):**
+```bash
+python scripts/run_pipeline.py --cd-hit /path/to/cd-hit --blast-dir /path/to/ncbi-blast-plus/bin --num 100
+```
+
+**2. Environment variables:**
 ```bash
 export CDHIT_BIN=/path/to/cd-hit
 export BLAST_BIN=/path/to/ncbi-blast-plus/bin
 ```
+
+**3. System PATH (lowest priority):**
+If neither CLI args nor env vars are set, the pipeline looks for `cd-hit`, `makeblastdb`, and `blastp` on `$PATH`.
 
 ## Quick Start
 
@@ -100,18 +109,24 @@ python scripts/compare_models.py --num 1000
 ### Predict & Filter (Stage 2)
 
 ```bash
-# Batch activity prediction
-python scripts/predict.py data/raw/amp_test2149.xlsx -o results/prediction/test_pred.xlsx
+# Batch activity prediction (input .xlsx auto-detects 'seq' column, falls back to first column)
+python scripts/predict.py data/dataset/amp_test2149.xlsx -o results/prediction/test_pred.xlsx
 
 # Filter by threshold
 python scripts/filter_results.py results/prediction/test_pred.xlsx -t 0.9
 ```
+
+> **Note:** XGBoost >=3.2 is required for the AEP and HP prediction models.
 
 ### Full Pipeline
 
 ```bash
 # End-to-end: generate → CD-HIT → BLAST → predict → filter
 python scripts/run_pipeline.py --model cvae_pred --target 1.0,1.0,1.0 --num 30000
+
+# With explicit external tool paths
+python scripts/run_pipeline.py --model cvae_pred --target 1.0,1.0,1.0 --num 30000 \
+    --cd-hit /path/to/cd-hit --blast-dir /path/to/ncbi-blast-plus/bin
 ```
 
 ## Models
@@ -128,9 +143,9 @@ python scripts/run_pipeline.py --model cvae_pred --target 1.0,1.0,1.0 --num 3000
 
 | Model    | Type                         | Feature Set           |
 | -------- | ---------------------------- | --------------------- |
-| AMP      | BiLSTM + Attention (PyTorch) | pc7 (7 descriptors)   |
-| AEP      | XGBoost                      | pc7 (7 descriptors)   |
-| HP       | XGBoost                      | pc5_1 (5 descriptors) |
+| AMP      | BiLSTM + Attention (PyTorch) | AF7 (7 descriptors)   |
+| AEP      | XGBoost                      | AF7 (7 descriptors)   |
+| HP       | XGBoost                      | AF5_1 (5 descriptors) |
 | Ensemble | XGBoost, RF, GBDT, SVC       | 9 feature sets        |
 
 ## Target Label Semantics

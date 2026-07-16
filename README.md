@@ -74,12 +74,14 @@ python scripts/compare_models.py --num 1000
 ### Predict & Filter (Stage 2)
 
 ```bash
-# Batch activity prediction
+# Batch activity prediction (input .xlsx auto-detects 'seq' column, falls back to first column)
 python scripts/predict.py data/dataset/amp_test2149.xlsx -o results/prediction/test_pred.xlsx
 
 # Filter by threshold
 python scripts/filter_results.py results/prediction/test_pred.xlsx -t 0.9
 ```
+
+> **Note:** XGBoost >=3.2 is required for the AEP and HP prediction models.
 
 ### Full Pipeline
 

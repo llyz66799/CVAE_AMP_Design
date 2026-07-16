@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 
 
@@ -28,6 +30,7 @@ def filter_by_threshold(
 
     if output_path is None:
         output_path = input_path.replace(".xlsx", f"_filtered_t{threshold}.xlsx")
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     filtered.to_excel(output_path, index=False)
     print(f"Filtered: {len(filtered)} / {len(df)} sequences pass threshold {threshold}")
     print(f"Saved to {output_path}")
