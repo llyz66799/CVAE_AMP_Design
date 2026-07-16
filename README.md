@@ -62,7 +62,7 @@ python scripts/generate.py --model cvae_pred --target 1.0,1.0,1.0 --num 200
 python scripts/compare_models.py --num 1000
 ```
 
-### Predict & Filter(Stage 2)
+### Predict & Filter (Stage 2)
 
 ```bash
 # Batch activity prediction
