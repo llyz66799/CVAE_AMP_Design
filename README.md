@@ -64,20 +64,7 @@ python scripts/generate.py --model cvae_pred --target 1.0,1.0,1.0 --num 200
 python scripts/compare_models.py --num 1000
 ```
 
-### Train Prediction Models (Stage 2)
-
-```bash
-# Train BiLSTM+Attention with Optuna hyperparameter optimization
-python scripts/train_prediction.py --method attention --task amp
-
-# Train XGBoost with GridSearchCV
-python scripts/train_prediction.py --method xgboost --task aep
-
-# Train all ensemble models (XGBoost, RF, GBDT, SVC) with best configs
-python scripts/train_prediction.py --method ensemble --task all
-```
-
-### Predict & Filter
+### Predict & Filter(Stage 2)
 
 ```bash
 # Batch activity prediction
