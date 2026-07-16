@@ -1,2 +1,142 @@
-# CVAE_AMP_Design
-CVAE-based antimicrobial peptide generation and multi-model activity prediction pipeline
+# CVAE-AMP-Design
+
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+CVAE-based antimicrobial peptide (AMP) generation and multi-model activity prediction pipeline. This project integrates two computational stages for rational AMP design:
+
+- **Stage 1 — Generation:** Conditional variational autoencoder (CVAE) with auxiliary property prediction loss, trained on 11,252 peptides to generate novel sequences with desired physicochemical profiles (low hemolysis, anti-E.coli, broad-spectrum antimicrobial).
+- **Stage 2 — Prediction:** Ensemble of five complementary models (BiLSTM+Attention, XGBoost, Random Forest, GBDT, SVC) to predict antimicrobial, anti-endotoxin, and hemolytic activities, followed by CD-HIT deduplication and BLAST-based homology filtering.
+
+## Project Structure
+
+```
+CVAE_AMP_Design/
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── pyproject.toml
+├── src/cvae_amp/                    # Importable Python package
+│   ├── config/                      # Paths and hyperparameter defaults
+│   ├── generation/                  # CVAE generative models
+│   ├── prediction/                  # Activity prediction models & training
+│   └── pipeline/                    # End-to-end orchestration
+├── scripts/                         # CLI entry points
+├── data/                            # Training datasets & feature tables
+├── models/                          # Trained model checkpoints
+├── results/                         # Output directory
+└── analysis/                        # Publication plotting scripts
+```
+
+## Installation
+
+```bash
+cd CVAE_AMP_Design
+pip install -e .
+```
+
+Or install dependencies only:
+
+```bash
+pip install -r requirements.txt
+```
+
+### External dependencies
+
+The full pipeline requires [CD-HIT](https://github.com/weizhongli/cdhit) and [BLAST+](https://blast.ncbi.nlm.nih.gov/) for sequence deduplication and homology filtering. Set their paths via environment variables:
+
+```bash
+export CDHIT_BIN=/path/to/cd-hit
+export BLAST_BIN=/path/to/ncbi-blast-plus/bin
+```
+
+## Quick Start
+
+### Generate Peptides (Stage 1)
+
+```bash
+# Train generation models
+python scripts/train_generation.py --model all
+
+# Generate 200 safe broad-spectrum AMP candidates
+python scripts/generate.py --model cvae_pred --target 1.0,1.0,1.0 --num 200
+
+# Compare all three generative models
+python scripts/compare_models.py --num 1000
+```
+
+### Train Prediction Models (Stage 2)
+
+```bash
+# Train BiLSTM+Attention with Optuna hyperparameter optimization
+python scripts/train_prediction.py --method attention --task amp
+
+# Train XGBoost with GridSearchCV
+python scripts/train_prediction.py --method xgboost --task aep
+
+# Train all ensemble models (XGBoost, RF, GBDT, SVC) with best configs
+python scripts/train_prediction.py --method ensemble --task all
+```
+
+### Predict & Filter
+
+```bash
+# Batch activity prediction
+python scripts/predict.py data/raw/amp_test2149.xlsx -o results/prediction/test_pred.xlsx
+
+# Filter by threshold
+python scripts/filter_results.py results/prediction/test_pred.xlsx -t 0.9
+```
+
+### Full Pipeline
+
+```bash
+# End-to-end: generate → CD-HIT → BLAST → predict → filter
+python scripts/run_pipeline.py --model cvae_pred --target 1.0,1.0,1.0 --num 30000
+```
+
+## Models
+
+### Generation Models
+
+| Model               | Parameters | Description                                    |
+| ------------------- | ---------- | ---------------------------------------------- |
+| VAE                 | 695,386    | Unconditional baseline                         |
+| CVAE                | 696,922    | Label-conditioned with dropout                 |
+| **CVAE+Pred** | 701,213    | Conditional + property predictor (recommended) |
+
+### Prediction Models
+
+| Model    | Type                         | Feature Set           |
+| -------- | ---------------------------- | --------------------- |
+| AMP      | BiLSTM + Attention (PyTorch) | pc7 (7 descriptors)   |
+| AEP      | XGBoost                      | pc7 (7 descriptors)   |
+| HP       | XGBoost                      | pc5_1 (5 descriptors) |
+| Ensemble | XGBoost, RF, GBDT, SVC       | 9 feature sets        |
+
+## Target Label Semantics
+
+For conditional generation, three labels control desired peptide properties:
+
+| Position | Property  | 1.0           | 0.0          | 0.5         |
+| -------- | --------- | ------------- | ------------ | ----------- |
+| 1st      | Hemolysis | Low (safe)    | High (toxic) | Unspecified |
+| 2nd      | Ecoli     | Anti-E.coli   | No activity  | Unspecified |
+| 3rd      | AMP       | Antimicrobial | No activity  | Unspecified |
+
+Common targets: `1.0,1.0,1.0` (safe broad-spectrum AMP), `1.0,0.5,1.0` (safe AMP, no E.coli preference).
+
+## Key Findings
+
+- **CVAE+Pred** achieves 18/20 amino acid diversity and near-training-distribution charge (+6.93 vs +5.88), outperforming both VAE and pure CVAE.
+- **Property prediction loss** stabilizes KL divergence (1.7–2.5 range vs 0–34 oscillation) and prevents amino acid collapse toward K/R-dominated sequences.
+- **Label dropout** (10%) enables learning from the 82% of training samples with incomplete labels.
+
+## Citation
+
+If you use this code in your research, please cite the corresponding paper and this repository.
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.

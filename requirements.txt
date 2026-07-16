@@ -1,0 +1,11 @@
+torch>=2.0
+numpy>=1.24
+pandas>=1.5
+matplotlib>=3.7
+seaborn>=0.12
+scikit-learn>=1.2
+xgboost>=1.7
+openpyxl>=3.1
+modlamp>=4.3
+joblib>=1.2
+optuna>=3.0

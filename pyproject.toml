@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "cvae-amp-design"
+version = "1.0.0"
+description = "CVAE-based antimicrobial peptide generation and multi-model activity prediction"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "CVAE-AMP Team"}]
+keywords = ["antimicrobial-peptides", "cvae", "deep-learning", "bioinformatics", "peptide-design"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "torch>=2.0",
+    "numpy>=1.24",
+    "pandas>=1.5",
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+    "scikit-learn>=1.2",
+    "xgboost>=1.7",
+    "openpyxl>=3.1",
+    "modlamp>=4.3",
+    "joblib>=1.2",
+    "optuna>=3.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "pytest-cov", "black", "ruff"]
+
+[project.scripts]
+cvae-train-gen = "cvae_amp.scripts.train_generation:main"
+cvae-generate = "cvae_amp.scripts.generate:main"
+cvae-train-pred = "cvae_amp.scripts.train_prediction:main"
+cvae-predict = "cvae_amp.scripts.predict:main"
+cvae-pipeline = "cvae_amp.scripts.run_pipeline:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"cvae_amp" = "src/cvae_amp"
+
+[tool.setuptools.package-data]
+cvae_amp = ["data/features/*.xlsx"]
