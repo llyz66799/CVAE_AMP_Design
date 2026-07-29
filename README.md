@@ -29,6 +29,7 @@ CVAE_AMP_Design/
 ## Installation
 
 ```bash
+conda create -n cvae_amp python=3.10
 pip install -r requirements.txt
 ```
 
