@@ -16,7 +16,6 @@ CVAE_AMP_Design/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-├── pyproject.toml
 ├── src/cvae_amp/                    # Importable Python package
 │   ├── config/                      # Paths and hyperparameter defaults
 │   ├── generation/                  # CVAE generative models
@@ -28,13 +27,6 @@ CVAE_AMP_Design/
 ```
 
 ## Installation
-
-```bash
-cd CVAE_AMP_Design
-pip install -e .
-```
-
-Or install dependencies only:
 
 ```bash
 pip install -r requirements.txt
