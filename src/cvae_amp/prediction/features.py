@@ -44,16 +44,26 @@ class FeatureEncoder:
     def dim(self) -> int:
         return self._dim
 
-    def encode_file(self, path: str) -> np.ndarray:
+    def encode_file(self, path: str, seq_col: str | int | None = None) -> np.ndarray:
         wb = openpyxl.load_workbook(path, data_only=True)
         ws = wb.active
         n_rows = ws.max_row - 1
+
+        # Resolve sequence column: by name, by index, or auto-detect
+        if isinstance(seq_col, int):
+            col_idx = seq_col
+        elif isinstance(seq_col, str):
+            col_idx = _find_col_by_header(ws, seq_col)
+            if col_idx is None:
+                raise ValueError(f"Column '{seq_col}' not found in {path}")
+        else:
+            col_idx = _find_col_by_header(ws, "seq") or 2
 
         result = np.zeros((n_rows, MAX_LEN, self._dim), dtype=np.float64)
 
         for i in range(2, ws.max_row + 1):
             idx = i - 2
-            seq_val = ws.cell(row=i, column=2).value  # sequence in column B
+            seq_val = ws.cell(row=i, column=col_idx).value
             if seq_val is None:
                 continue
             seq = str(seq_val).strip().upper()
@@ -63,3 +73,11 @@ class FeatureEncoder:
                 result[idx, j] = self._id_to_vec[aa_id]
 
         return result
+
+
+def _find_col_by_header(ws, name: str) -> int | None:
+    """Return 1-based column index for header *name*, or None if not found."""
+    for col in range(1, ws.max_column + 1):
+        if ws.cell(row=1, column=col).value == name:
+            return col
+    return None
