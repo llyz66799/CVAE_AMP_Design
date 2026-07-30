@@ -116,7 +116,7 @@ class AMPWorkflow:
         print(f"  Done: {len(peptides):,} peptides in {elapsed:.0f}s")
 
         out_xlsx = self.work_dir / "generated_30k.xlsx"
-        pd.DataFrame({"sequence": peptides, "length": [len(p) for p in peptides]}).to_excel(out_xlsx, index=False)
+        pd.DataFrame({"seq": peptides, "length": [len(p) for p in peptides]}).to_excel(out_xlsx, index=False)
 
         fasta_path = self.work_dir / "generated_30k.fasta"
         with open(fasta_path, "w") as f:
@@ -190,7 +190,7 @@ class AMPWorkflow:
         print(f"  Final: {len(final)} sequences")
 
         out_path = self.work_dir / "candidates_final_filtered.xlsx"
-        pd.DataFrame({"sequence": final, "length": [len(s) for s in final]}).to_excel(out_path, index=False)
+        pd.DataFrame({"seq": final, "length": [len(s) for s in final]}).to_excel(out_path, index=False)
         print(f"  Saved: {out_path}\n")
         return out_path
 
@@ -208,13 +208,20 @@ class AMPWorkflow:
         model_aep = load_aep()
         model_hp = load_hp()
 
+        # Read input and detect columns by header name
+        wb_in = openpyxl.load_workbook(candidates_xlsx, data_only=True)
+        ws_in = wb_in.active
+        hdrs = [ws_in.cell(row=1, column=c).value for c in range(1, ws_in.max_column + 1)]
+        seq_col = hdrs.index("seq") + 1 if "seq" in hdrs else 1
+        len_col = hdrs.index("length") + 1 if "length" in hdrs else None
+
         feature_dir = ROOT / "data" / "features"
         print("  Encoding features...")
         enc_amp = FeatureEncoder(str(feature_dir / "20aa_AF7_feature.xlsx"))
         enc_hp = FeatureEncoder(str(feature_dir / "20aa_AF5_1_feature.xlsx"))
 
-        feat_amp = enc_amp.encode_file(str(candidates_xlsx))
-        feat_hp = enc_hp.encode_file(str(candidates_xlsx))
+        feat_amp = enc_amp.encode_file(str(candidates_xlsx), seq_col=seq_col)
+        feat_hp = enc_hp.encode_file(str(candidates_xlsx), seq_col=seq_col)
         n = len(feat_amp)
         print(f"  Predicting {n} sequences...")
 
@@ -231,20 +238,20 @@ class AMPWorkflow:
 
         # Build output
         print("  Writing results...")
-        wb_in = openpyxl.load_workbook(candidates_xlsx, data_only=True)
-        ws_in = wb_in.active
-
         wb = openpyxl.Workbook()
         ws_all = wb.active
         ws_all.title = "all_predictions"
-        hdrs = ["sequence", "length", "amp_Pred", "aep_Pred", "hp_Pred", "pass_all"]
+        hdrs = ["seq", "length", "amp_Pred", "aep_Pred", "hp_Pred", "pass_all"]
         ws_all.append(hdrs)
         high_conf = []
 
         for i in range(2, ws_in.max_row + 1):
             idx = i - 2
-            seq = ws_in.cell(row=i, column=1).value or ""
-            length = ws_in.cell(row=i, column=2).value or len(str(seq))
+            seq = ws_in.cell(row=i, column=seq_col).value or ""
+            if len_col:
+                length = ws_in.cell(row=i, column=len_col).value or len(str(seq))
+            else:
+                length = len(str(seq))
             amp = float(amp_pred[idx])
             aep = float(aep_pred[idx])
             hp = float(hp_pred[idx])
