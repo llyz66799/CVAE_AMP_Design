@@ -69,10 +69,10 @@ python scripts/generate.py --model cvae_pred --target 1.0,1.0,1.0 --num 200
 
 ```bash
 # Batch activity prediction (input .xlsx auto-detects 'seq' column, falls back to first column)
-python scripts/predict.py data/dataset/amp_test2149.xlsx -o results/prediction/test_pred.xlsx
+python scripts/predict.py path/to/your_input.xlsx -o path/to/save_results.xlsx
 
 # Filter by threshold
-python scripts/filter_results.py results/prediction/test_pred.xlsx -t 0.9
+python scripts/filter_results.py path/to/save_results.xlsx -t 0.9
 ```
 
 > **Note:** XGBoost >=3.2 is required for the AEP and HP prediction models.
