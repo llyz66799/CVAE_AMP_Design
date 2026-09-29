@@ -115,7 +115,7 @@ For conditional generation, three labels control desired peptide properties:
 | -------- | --------- | ------------- | ------------ | ----------- |
 | 1st      | Hemolysis | Low activity (safe)    | High activity (toxic) | Unspecified |
 | 2nd      | Anti-*E.coli*     | High  activity | Low activity  | Unspecified |
-| 3rd      | Antibacterial       | Antibacterial | No activity  | Unspecified |
+| 3rd      | Antibacterial       | Antibacterial activity | No activity  | Unspecified |
 
 Common targets: `1.0,1.0,1.0` (safe broad-spectrum AMP), `1.0,0.5,1.0` (safe AMP, no E.coli preference).
 
