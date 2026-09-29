@@ -4,10 +4,10 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-CVAE-based antimicrobial peptide (AMP) generation and multi-model activity prediction pipeline. This project integrates two computational stages for rational AMP design:
+A Pipeline for Property-Guided CVAE Antimicrobial Peptide Generation and Multi-Property Screening. This project integrates two computational stages for rational AMP design:
 
-- **Stage 1 — Generation:** Conditional variational autoencoder (CVAE) with auxiliary property prediction loss, trained on 11,252 peptides to generate novel sequences with desired physicochemical profiles (low hemolysis, anti-E.coli, broad-spectrum antimicrobial).
-- **Stage 2 — Prediction:** Ensemble of five complementary models (BiLSTM+Attention, XGBoost, Random Forest, GBDT, SVC) to predict antimicrobial, anti-endotoxin, and hemolytic activities, followed by CD-HIT deduplication and BLAST-based homology filtering.
+- **Stage 1 — Generation:** Conditional variational autoencoder with auxiliary property prediction loss (CVAE_P) , trained on 11,252 peptides to generate novel sequences with desired physicochemical profiles (low hemolysis, anti-E.coli, broad-spectrum antibacterial).
+- **Stage 2 — Prediction:** Ensemble of three complementary models (ABP, AEP, HP) to predict antimicrobial, anti-endotoxin, and hemolytic activities, followed by CD-HIT deduplication and BLAST-based homology filtering.
 
 ## Project Structure
 
@@ -96,13 +96,13 @@ python scripts/run_pipeline.py --model cvae_pred --target 1.0,1.0,1.0 --num 3000
 | ------------------- | ---------- | ---------------------------------------------- |
 | VAE                 | 695,386    | Unconditional baseline                         |
 | CVAE                | 696,922    | Label-conditioned with dropout                 |
-| **CVAE+Pred** | 701,213    | Conditional + property predictor (recommended) |
+| **CVAE_P** | 701,213    | Conditional + property predictor (recommended) |
 
 ### Prediction Models
 
 | Model    | Type                         | Feature Set           |
 | -------- | ---------------------------- | --------------------- |
-| AMP      | BiLSTM + Attention (PyTorch) | AF7 (7 descriptors)   |
+| ABP      | BiLSTM + Attention (PyTorch) | AF7 (7 descriptors)   |
 | AEP      | XGBoost                      | AF7 (7 descriptors)   |
 | HP       | XGBoost                      | AF5_1 (5 descriptors) |
 | Ensemble | XGBoost, RF, GBDT, SVC       | 9 feature sets        |
@@ -113,15 +113,15 @@ For conditional generation, three labels control desired peptide properties:
 
 | Position | Property  | 1.0           | 0.0          | 0.5         |
 | -------- | --------- | ------------- | ------------ | ----------- |
-| 1st      | Hemolysis | Low (safe)    | High (toxic) | Unspecified |
-| 2nd      | Ecoli     | Anti-E.coli   | No activity  | Unspecified |
-| 3rd      | AMP       | Antimicrobial | No activity  | Unspecified |
+| 1st      | Hemolysis | Low activity (safe)    | High activity (toxic) | Unspecified |
+| 2nd      | Anti-*E.coli*     | High  activity | Low activity  | Unspecified |
+| 3rd      | Antibacterial       | Antibacterial | No activity  | Unspecified |
 
 Common targets: `1.0,1.0,1.0` (safe broad-spectrum AMP), `1.0,0.5,1.0` (safe AMP, no E.coli preference).
 
 ## Key Findings
 
-- **CVAE+Pred** achieves 18/20 amino acid diversity and near-training-distribution charge (+6.93 vs +5.88), outperforming both VAE and pure CVAE.
+- **CVAE_P** achieves 18/20 amino acid diversity and near-training-distribution charge (+6.93 vs +5.88), outperforming both VAE and pure CVAE.
 - **Property prediction loss** stabilizes KL divergence (1.7–2.5 range vs 0–34 oscillation) and prevents amino acid collapse toward K/R-dominated sequences.
 - **Label dropout** (10%) enables learning from the 82% of training samples with incomplete labels.
 
