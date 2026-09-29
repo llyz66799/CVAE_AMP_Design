@@ -119,11 +119,6 @@ For conditional generation, three labels control desired peptide properties:
 
 Common targets: `1.0,1.0,1.0` (safe broad-spectrum AMP), `1.0,0.5,1.0` (safe AMP, no E.coli preference).
 
-## Key Findings
-
-- **CVAE_P** achieves 18/20 amino acid diversity and near-training-distribution charge (+6.93 vs +5.88), outperforming both VAE and pure CVAE.
-- **Property prediction loss** stabilizes KL divergence (1.7–2.5 range vs 0–34 oscillation) and prevents amino acid collapse toward K/R-dominated sequences.
-- **Label dropout** (10%) enables learning from the 82% of training samples with incomplete labels.
 
 ## Citation
 
