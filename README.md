@@ -6,8 +6,8 @@
 
 A pipeline for property-puided CVAE antimicrobial peptide(AMP) generation and multi-attribute screening. This project integrates two computational stages for rational AMP design:
 
-- **Stage 1 — Generation:** Conditional variational autoencoder with multi-attribute prediction loss (CVAE_P) , trained on 11,252 peptides to generate novel sequences with desired physicochemical profiles (low hemolysis, anti-E.coli, broad-spectrum antibacterial).
-- **Stage 2 — Prediction:** Ensemble of three models (ABP, AEP, HP) to predict antimicrobial, anti-endotoxin, and hemolytic activities, followed by CD-HIT deduplication and BLAST-based homology filtering.
+- **Stage 1 — Generation:** Conditional variational autoencoder with multi-attribute prediction loss (CVAE_P) , trained on 11,252 peptides to generate novel sequences with target activity (low hemolysis, anti-*E.coli*, broad-spectrum antibacterial).
+- **Stage 2 — Prediction:** Ensemble of three models (ABP, AEP, HP) to predict antibacteria, anti-*E.coli*, and hemolytic activities, followed by CD-HIT deduplication and BLAST-based homology filtering.
 
 ## Project Structure
 
