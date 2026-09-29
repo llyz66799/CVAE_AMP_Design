@@ -4,7 +4,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-A Pipeline for Property-Guided CVAE Antimicrobial Peptide Generation and Multi-Property Screening. This project integrates two computational stages for rational AMP design:
+A Pipeline for Property-Guided CVAE Antimicrobial Peptide Generation and Multi-attribute Screening. This project integrates two computational stages for rational AMP design:
 
 - **Stage 1 — Generation:** Conditional variational autoencoder with auxiliary property prediction loss (CVAE_P) , trained on 11,252 peptides to generate novel sequences with desired physicochemical profiles (low hemolysis, anti-E.coli, broad-spectrum antibacterial).
 - **Stage 2 — Prediction:** Ensemble of three complementary models (ABP, AEP, HP) to predict antimicrobial, anti-endotoxin, and hemolytic activities, followed by CD-HIT deduplication and BLAST-based homology filtering.
